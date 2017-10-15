@@ -29,6 +29,9 @@
 
   var isStreaming = false;
   var width = 320, height = 0;
+  var lastAnim;
+
+  var bbs = [];
 
   var ws;
 
@@ -56,20 +59,8 @@
     }
   }, false);
 
-  function takePicture(){
-    var context = canvas.getContext('2d');
-    if(width && height) {
-      canvas.width = width;
-      canvas.height = height;
-      context.drawImage(video, 0, 0, width, height);
 
-      var data = canvas.toDataURL('image/png');
-      imgOutput.setAttribute('src', data);
-    }
-  }
-
-  function sendPicture()
-  {
+  function sendPicture() {
     var context = canvas.getContext('2d');
     if(width && height) {
       canvas.width = width;
@@ -77,6 +68,8 @@
       context.drawImage(video, 0, 0, width, height);
 
       var data = canvas.toDataURL('image/png', 0.6);
+
+      drawBoundingBox(context);
 
       console.log('sending data');
 
@@ -90,14 +83,14 @@
   }
 
 
-  function drawBoundingBox(dims)
+  function drawBoundingBox(context)
   {
-    var context = canvas.getContext('2d');
-    if(width && height){
+    var dims = bbs.pop();
+    if(dims)
+    {
       context.rect(dims.left, dims.top, dims.width, dims.height);
       context.stroke();
     }
-
   }
 
   var host = window.location.host;
@@ -120,7 +113,7 @@
     switch(type)
     {
       case 'bounding_box':
-        drawBoundingBox(data.dims);
+        bbs.push(data.dims);
         break;
 
       default:
