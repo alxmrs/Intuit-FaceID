@@ -6,6 +6,7 @@ import tornado.websocket
 from src.EchoApi import ApiHandler
 from src.FaceIDServer import FaceIDServer
 from src.Utils import STATIC_DIR
+from src.settings import settings
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -16,7 +17,7 @@ def make_app():
         (r'/', MainHandler),
         (r'/ws', FaceIDServer),
         (r'/api', ApiHandler),
-    ])
+    ], **settings)
 
 if __name__ == '__main__':
     app = make_app()

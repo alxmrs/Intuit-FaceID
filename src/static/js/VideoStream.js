@@ -1,117 +1,70 @@
-/**
- * Created by arosengarten on 10/11/17.
- */
+(function(){
+
+  var self;
+  var isStreaming = false;
+  var video, canvas, ctx, width, height;
 
 
-var WSVideoRecorder = (function(){
-  'use strict';
-
-  var WORKER_PATH = 'socketWorker.js';
-
-  var self, worker;
-  var canvas, ctx, video, width, height;
-  var lastAnimationFrame;
-
-  function WSVideoRecorder(stream, wsURL, wsProtocol){
+  function VideoStream(_width, _height){
 
     self = this;
-    recording = false;
 
-    worker = new Worker(config.workerPath || WORKER_PATH);
+    video = document.createElement('video');
+    canvas = document.createElement('canvas');
 
-    worker.postMessage({
-      command: 'init',
-      config: {
-        uri: wsURL, protocol: wsProtocol
-      }
+    width = _width || 320;
+    height = _height || 0;
+
+    navigator.mediaDevices.getUserMedia({video: true, audio: false})
+    .then(function(stream) {
+      video.srcObject = stream;
+      video.play();
+    })
+    .catch(function(err) {
+      console.error('An error occurred: ' + err);
     });
 
+    video.addEventListener('canplay', function(ev){
+      if(!isStreaming) {
+        height = video.videoHeight / (video.videoWidth/width);
 
-    canvas = document.createElement('canvas');
-    ctx = canvas.getContext('2d');
-    video = createVideo(stream);
+        video.setAttribute('width', width);
+        video.setAttribute('height', height);
 
+        canvas.setAttribute('width', width);z =
+        canvas.setAttribute('height', height);
+
+        isStreaming = true;
+      }
+    }, false);
   }
 
-  var recording;
-  WSVideoRecorder.prototype.isRecording = function () {
-      return recording;
-  };
+  VideoStream.prototype.video = video;
 
-  WSVideoRecorder.prototype.record = function(){
-    recording = true;
+  VideoStream.prototype.canvas = canvas;
 
-    initDimensions();
+  VideoStream.prototype.ctx = ctx || (ctx = canvas.getContext('2d'));
 
-    var startTime = Date.now();
-    var lastFrameTime;
-    var prevImg;
-
-    (function drawVideoFrame(time){
-
-      if(!lastFrameTime) {
-        lastFrameTime = time;
-      }
-
-      var toDraw = (time - lastFrameTime >= 90);
-      if (!toDraw) return;
-
-      if(recording) {
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        var img = canvas.toDataURL('image/png', 0.6);
-
-        if(typeof prevImg === undefined || prevImg !== img)
-        {
-          prevImg = img;
-          worker.postMessage({
-            command: 'record',
-            uri: img
-          });
-        }
-
-        lastFrameTime = time;
-
-        lastAnimationFrame = requestAnimationFrame(drawVideoFrame);
-
-      }
-
-
-    })();
-  };
-
-  WSVideoRecorder.prototype.stop = function() {
-    recording = false;
-    if(lastAnimationFrame){
-      cancelAnimationFrame(lastAnimationFrame);
-    }
-
-  };
-
-
-  function createVideo(vidSrc) {
-    var video = document.createElement('video');
-    video.muted = true;
-    video.volume = 0;
-    video.autoplay = true;
-    video.src = vidSrc;
-    video.play();
-    return video;
-  }
-
-  function initDimensions()
+  VideoStream.prototype.isStreaming = function()
   {
-    if(!width && !height)
+    return isStreaming;
+  };
+
+  VideoStream.prototype.stopStreaming = function () {
+    if(isStreaming)
     {
-      width = video.offsetWidth || 320;
-      height = video.offsetHeight || 240;
-
-      canvas.width = width;
-      canvas.height = heigt;
-      video.widows = width;
-      video.height = height;
+      isStreaming = false;
+      video.pause();
     }
-  }
+  };
+
+  VideoStream.prototype.startStreaming = function() {
+    if(!isStreaming)
+    {
+      isStreaming = true;
+      video.play();
+    }
+  };
 
 
-  return WSVideoRecorder;
 }());
