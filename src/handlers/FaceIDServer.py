@@ -1,19 +1,16 @@
-import json
 import base64
-import tornado.websocket
 import io
-
-import openface
-import dlib
-
-import numpy as np
-
-from PIL import Image
+import json
 from typing import Optional
 
-from src.Utils import create_logger, DLIB_MODELS_DIR
-from src.EchoApi import cl
+import dlib
+import numpy as np
+import tornado.websocket
+from PIL import Image
 
+import openface
+from src.Utils import create_logger, DLIB_MODELS_DIR
+from src.handlers.EchoApi import cl
 
 align = openface.AlignDlib(str(DLIB_MODELS_DIR / 'shape_predictor_68_face_landmarks.dat'))
 

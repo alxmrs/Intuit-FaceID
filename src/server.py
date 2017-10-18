@@ -3,10 +3,11 @@ import tornado.template
 import tornado.web
 import tornado.websocket
 
-from src.EchoApi import ApiHandler
-from src.FaceIDServer import FaceIDServer
 from src.Utils import STATIC_DIR
+from src.handlers.EchoApi import ApiHandler
+from src.handlers.FaceIDServer import FaceIDServer
 from src.settings import settings
+
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
