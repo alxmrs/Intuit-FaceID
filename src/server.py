@@ -3,7 +3,7 @@ import tornado.template
 import tornado.web
 import tornado.websocket
 
-from src.Utils import STATIC_DIR
+from src.utils import STATIC_DIR
 from src.handlers.EchoApi import ApiHandler
 from src.handlers.FaceIDServer import FaceIDServer
 from src.settings import settings

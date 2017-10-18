@@ -9,7 +9,7 @@ import tornado.websocket
 from PIL import Image
 
 import openface
-from src.Utils import create_logger, DLIB_MODELS_DIR
+from src.utils import create_logger, DLIB_MODELS_DIR
 from src.handlers.EchoApi import cl
 
 align = openface.AlignDlib(str(DLIB_MODELS_DIR / 'shape_predictor_68_face_landmarks.dat'))
