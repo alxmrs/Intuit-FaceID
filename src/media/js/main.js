@@ -1,22 +1,28 @@
 
 var VideoStream = require('./VideoStream.js').VideoStream;
 
+//// Setup Section
 var output = document.getElementById('test'),
   imgOutput = document.getElementById('imgOutput'),
   cameraOutput = document.getElementById('camera');
 
-var bbs = [];
 
-var ws;
+var ws,
+  vs = new VideoStream(),
+  bbs = [];
 
-var vs = new VideoStream();
+
+
+
+//// Video Stream Rendering Section
 
 cameraOutput.appendChild(vs.canvas);
-cameraOutput.appendChild(vs.video);
+// cameraOutput.appendChild(vs.video);
 
-
+/**
+ * Capture an image at a time from the VideoStream object, draw bounding box, send to server.
+ */
 function sendPicture() {
-
   if(vs.render()){
      var data = vs.canvas.toDataURL('image/png', 0.6);
 
@@ -33,6 +39,10 @@ function sendPicture() {
 }
 
 
+/**
+ * Draws bounding box onto a canvas, given a canvas context.
+ * @param context Canvas context to draw bounding box on.
+ */
 function drawBoundingBox(context)
 {
   var dims = bbs.pop();
@@ -43,9 +53,13 @@ function drawBoundingBox(context)
   }
 }
 
+
+setInterval(sendPicture, 100);
+
+//// WebSocket Handler Section
+
 var host = window.location.host;
 console.log(host);
-//createSocket("ws://" + host +  "/ws", "Local");
 
 ws = new WebSocket('ws://' + host + '/ws');
 
@@ -82,4 +96,4 @@ ws.onerror = function(ev) {
 };
 
 
-setInterval(sendPicture, 100);
+

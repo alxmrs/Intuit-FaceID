@@ -6,13 +6,10 @@ var video = document.createElement('video'),
 
 function VideoStream(_width, _height){
 
-  self = this;
-
-
-
   width = _width || 320;
   height = _height || 0;
 
+  // Get WebCam Video from WebRTC, link to Video tag.
   navigator.mediaDevices.getUserMedia({video: true, audio: false})
   .then(function(stream) {
     video.srcObject = stream;
@@ -22,6 +19,7 @@ function VideoStream(_width, _height){
     console.error('An error occurred: ' + err);
   });
 
+  // Set streaming to true once video loads.
   video.addEventListener('canplay', function(ev){
     if(!isStreaming) {
       height = video.videoHeight / (video.videoWidth/width);
@@ -64,6 +62,10 @@ VideoStream.prototype.startStreaming = function() {
   }
 };
 
+/**
+ * Renders image from video tag to canvas
+ * @returns {boolean}
+ */
 VideoStream.prototype.render = function() {
   if(width && height && isStreaming) {
     this.canvas.width = width;
