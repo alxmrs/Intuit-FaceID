@@ -1,3 +1,12 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea/
 /src/node_modules/
+*.pyc
+.DS_Store
+openface/__pycache__/
+src/Log/
+src/__pycache__/settings.cpython-35.pyc
+src/handlers/__pycache__/
+src/media/css/
+src/static/scripts/
+src/webpack-assets.json
