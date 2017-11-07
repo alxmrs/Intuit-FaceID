@@ -54,6 +54,20 @@ function drawBoundingBox(context)
 }
 
 
+function trainCustomer(cust_id){
+  var payload = {
+    'type': 'start_train',
+    'customer_id': cust_id
+  };
+
+  ws.send(JSON.stringify(payload));
+
+  setTimeout(function(){
+    ws.send(JSON.stringify({'type': 'stop_train'}));
+  }, 3000);
+}
+
+
 setInterval(sendPicture, 100);
 
 //// WebSocket Handler Section

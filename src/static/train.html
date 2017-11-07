@@ -1,0 +1,26 @@
+{% extends "templates/base.html" %}
+
+{% block title %} Collect a record of your face {% end %}
+
+{% block content %}
+
+<H1>Learning to recognize customer {{customer_id}}</H1>
+
+<p id="test">
+    Status
+</p>
+
+<div id="camera">
+</div>
+
+
+{% end %}
+
+{% block scripts %}
+<script type="text/javascript">
+  (function(){
+    trainCustomer({{customer_id}});
+  })();
+
+</script>
+{% end %}
